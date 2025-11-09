@@ -1,5 +1,3 @@
-// TODO: 로딩상태 추가
-
 import ErrorState from "../common/ErrorState";
 import LoadingSpinner from "../common/LoadingSpinner";
 import ProductCardSkeleton from "../common/ProductCardSkeleton";
