@@ -11,6 +11,7 @@ export function getQueryParams() {
 }
 
 export function updateQueryParams(newParams) {
+  const BASE_URL = import.meta.env.BASE_URL || "/";
   const params = new URLSearchParams(window.location.search);
   Object.entries(newParams).forEach(([key, value]) => {
     if (value) {
@@ -19,6 +20,13 @@ export function updateQueryParams(newParams) {
       params.delete(key);
     }
   });
-  const newUrl = `${window.location.pathname}?${params.toString()}`;
+
+  // BASE_PATH를 제외한 경로 가져오기
+  let pathname = window.location.pathname;
+  if (BASE_URL !== "/" && pathname.startsWith(BASE_URL)) {
+    pathname = pathname.slice(BASE_URL.length) || "/";
+  }
+
+  const newUrl = `${BASE_URL === "/" ? pathname : BASE_URL + pathname}?${params.toString()}`;
   window.history.pushState({}, "", newUrl);
 }

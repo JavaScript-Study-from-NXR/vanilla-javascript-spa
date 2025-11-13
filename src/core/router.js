@@ -3,8 +3,21 @@ export const createRouter = () => {
   const routes = [];
   let notFoundHandler = null;
 
+  // BASE_PATH 가져오기 (Vite에서 설정한 base)
+  const BASE_PATH = import.meta.env.BASE_URL || "/";
+
+  // pathname에서 BASE_PATH 제거
+  const getRouterPath = (pathname) => {
+    if (BASE_PATH === "/" || !pathname.startsWith(BASE_PATH)) {
+      return pathname;
+    }
+    return pathname.slice(BASE_PATH.length) || "/";
+  };
+
   // URL과 라우트 매칭
   const matchRoute = (pathname) => {
+    const routerPath = getRouterPath(pathname);
+
     for (const route of routes) {
       // 동적 파라미터 지원: /product/:id
       const paramNames = [];
@@ -14,7 +27,7 @@ export const createRouter = () => {
       });
 
       const regex = new RegExp(`^${pattern}$`);
-      const matches = pathname.match(regex);
+      const matches = routerPath.match(regex);
 
       if (matches) {
         const params = {};
@@ -54,7 +67,9 @@ export const createRouter = () => {
 
     // 페이지 이동
     push: (path) => {
-      window.history.pushState(null, "", path);
+      // BASE_PATH를 포함한 전체 경로로 변환
+      const fullPath = BASE_PATH === "/" ? path : BASE_PATH + path.replace(/^\//, "");
+      window.history.pushState(null, "", fullPath);
       handleRouteChange();
     },
 
