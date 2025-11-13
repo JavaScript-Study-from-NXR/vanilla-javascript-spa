@@ -1,27 +1,29 @@
-// TODO: 로딩상태 추가
-
 import Breadcrumb from "../common/Breadcrumb";
 
 export default function ProductFilter({ loading, categories, selectedCategory1, selectedCategory2, category2List }) {
   const renderCategories = () => {
-    if (loading) {
+    const categoryList = Object.keys(categories);
+
+    // 로딩 중이거나 카테고리가 아직 로드되지 않은 경우
+    if (loading || categoryList.length === 0) {
       return /*html*/ `
       <div class="text-sm text-gray-500 italic">카테고리 로딩 중...</div>
       `;
     }
-    const categoryList = Object.keys(categories);
-    console.log(categoryList);
-    if (!categoryList.length) {
-      return /*html*/ `<div> 카테고리가 없습니다.</div>`;
-    }
+
     return categoryList
-      .map(
-        (cat1) => /*html*/ `
-      <button data-category1=${cat1} class="category1-filter-btn text-left px-3 py-2 text-sm rounded-md border transition-colors bg-white border-gray-300 text-gray-700 hover:bg-gray-50">
+      .map((cat1) => {
+        const isSelected = selectedCategory1 === cat1;
+        const buttonClass = isSelected
+          ? "category1-filter-btn text-left px-3 py-2 text-sm rounded-md border transition-colors bg-blue-100 border-blue-300 text-blue-800"
+          : "category1-filter-btn text-left px-3 py-2 text-sm rounded-md border transition-colors bg-white border-gray-300 text-gray-700 hover:bg-gray-50";
+
+        return /*html*/ `
+      <button data-category1=${cat1} class="${buttonClass}">
         ${cat1}
       </button>
-      `,
-      )
+      `;
+      })
       .join(" ");
   };
 
@@ -32,19 +34,24 @@ export default function ProductFilter({ loading, categories, selectedCategory1, 
     return /*html*/ `
     <div class="flex flex-wrap gap-2">
       ${category2List
-        .map(
-          (cat2) => /*html*/ `
+        .map((cat2) => {
+          const isSelected = selectedCategory2 === cat2;
+          const buttonClass = isSelected
+            ? "category2-filter-btn text-left px-3 py-2 text-sm rounded-md border transition-colors bg-blue-100 border-blue-300 text-blue-800"
+            : "category2-filter-btn text-left px-3 py-2 text-sm rounded-md border transition-colors bg-white border-gray-300 text-gray-700 hover:bg-gray-50";
+
+          return /*html*/ `
         <div>
           <button
             data-category1=${selectedCategory1}
             data-category2=${cat2}
-            class="category2-filter-btn text-left px-3 py-2 text-sm rounded-md border transition-colors bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
+            class="${buttonClass}"
           >
             ${cat2}
           </button>
         </div>
-      `,
-        )
+      `;
+        })
         .join(" ")}
     </div>
     `;
