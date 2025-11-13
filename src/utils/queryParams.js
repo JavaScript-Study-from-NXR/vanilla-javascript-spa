@@ -27,6 +27,6 @@ export function updateQueryParams(newParams) {
     pathname = pathname.slice(BASE_URL.length) || "/";
   }
 
-  const newUrl = `${BASE_URL === "/" ? pathname : BASE_URL + pathname}?${params.toString()}`;
+  const newUrl = `${BASE_URL === "/" ? pathname : BASE_URL.replace(/\/$/, "") + pathname}?${params.toString()}`;
   window.history.pushState({}, "", newUrl);
 }

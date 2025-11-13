@@ -1,7 +1,4 @@
 export default function Header({ showBackButton = false, title = "쇼핑몰", cartCount = 0 } = {}) {
-  // BASE_URL 가져오기 (router와 동일하게)
-  const BASE_URL = import.meta.env.BASE_URL || "/";
-
   return /*html*/ `
     <header class="bg-white shadow-sm sticky top-0 z-40">
         <div class="max-w-md mx-auto px-4 py-4">
@@ -20,7 +17,7 @@ export default function Header({ showBackButton = false, title = "쇼핑몰", ca
             `
                 : /*html*/ `
             <h1 class="text-xl font-bold text-gray-900">
-              <a href="${BASE_URL}" data-link="">${title}</a>
+              <a href="/" data-link="">${title}</a>
             </h1>
             `
             }

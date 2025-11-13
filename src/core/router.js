@@ -68,7 +68,7 @@ export const createRouter = () => {
     // 페이지 이동
     push: (path) => {
       // BASE_PATH를 포함한 전체 경로로 변환
-      const fullPath = BASE_PATH === "/" ? path : BASE_PATH + path.replace(/^\//, "");
+      const fullPath = BASE_PATH === "/" ? path : BASE_PATH.replace(/\/$/, "") + path;
       window.history.pushState(null, "", fullPath);
       handleRouteChange();
     },
