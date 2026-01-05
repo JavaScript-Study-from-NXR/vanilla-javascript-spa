@@ -38,7 +38,25 @@ function Routers(configs) {
 
   const _getComponentByPathname = async () => {
     const pathname = window.location.pathname;
-    const _loadedComponent = configs[pathname] || configs["/404"];
+    const pathComponents = pathname.slice(1).replace("index.html", "").split("/");
+    const matchedPath = Object.keys(configs).find((path) => {
+      const configCompos = path.slice(1).split("/");
+      if (configCompos.length !== pathComponents.length) {
+        return false;
+      }
+
+      return configCompos.every((c, i) => {
+        if (c.startsWith("{") && c.endsWith("}")) {
+          return true;
+        }
+        if (c === pathComponents[i]) {
+          return true;
+        }
+        return false;
+      });
+    });
+
+    const _loadedComponent = configs[matchedPath] || configs["/404"];
     try {
       const rendingComponnt = await _loadedComponent();
       return rendingComponnt;
