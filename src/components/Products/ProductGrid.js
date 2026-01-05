@@ -1,4 +1,5 @@
 import { ProductItem } from "./ProductItem";
+import { Link, ROUTE_ADDRESS } from "../../routes";
 /**
  * @typedef {Object} Product
  * @property {string} title
@@ -21,7 +22,7 @@ import { ProductItem } from "./ProductItem";
 export function ProductGrid(products) {
   return `
   <div class="grid grid-cols-2 gap-4 mb-6" id="products-grid">
-    ${products.map((product) => ProductItem(product)).join("\n")}
+    ${products.map((product) => Link(ROUTE_ADDRESS.productDetail(product.productId), ProductItem(product))).join("\n")}
   </div>
   `;
 }

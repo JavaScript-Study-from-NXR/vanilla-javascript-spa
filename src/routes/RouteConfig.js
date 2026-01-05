@@ -3,3 +3,8 @@ export const RouteConfig = {
   "/product/{productId}": () => import("../pages/ProductDetail").then((module) => module.default()),
   "/404": () => import("../pages/NotFound").then((module) => module.default()),
 };
+
+export const ROUTE_ADDRESS = {
+  home: "/",
+  productDetail: (productId) => `/product/${productId}`,
+};
