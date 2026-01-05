@@ -22,13 +22,15 @@ function Routers(configs) {
       _notifyRouteChange();
     };
 
+    window.removeEventListener("popstate", _notifyRouteChange);
+    window.addEventListener("popstate", _notifyRouteChange);
     window.removeEventListener(_pathnameChangeEvent, pathChangeCallback);
     window.addEventListener(_pathnameChangeEvent, pathChangeCallback);
   };
 
   const _routerPush = (path) => {
     if (path === window.location.pathname) return;
-    window.history.pushState({}, "", path);
+    history.pushState({}, "", path);
   };
 
   // const _routerReplace = (path) => {
@@ -70,28 +72,36 @@ function Routers(configs) {
   const RouteMain = () => {
     const [renderComponent, setRenderComponent] = useState("");
 
+    const _changePathnameCallback = async () => {
+      const component = await _getComponentByPathname();
+      setRenderComponent(component);
+    };
     useEffect(() => {
-      const _changePathnameCallback = async () => {
-        const component = await _getComponentByPathname();
-        setRenderComponent(component);
-      };
+      console.log("useEffect run");
       _changePathnameCallback();
-      _addEventPathnameChange(_changePathnameCallback);
     }, []);
+    _addEventPathnameChange(_changePathnameCallback);
 
     return renderComponent;
   };
 
-  const Link = (to, children, className) => {
-    const $a = document.createElement("a");
-    $a.innerHTML = children;
-    $a.classList.add(...className.split(" "));
-    const _clickLink = (e) => {
-      e.preventDefault();
+  /**
+   * 라우터 이동 컴포넌트
+   * @param {string} to - 이동할 경로
+   * @param {string} children - 링크 텍스트 또는 HTML
+   * @param {string} className - 링크에 적용할 class
+   * @returns {string} - 생성된 앵커 태그의 HTML 문자열
+   */
+  const Link = (to, children, className = "") => {
+    const _clickLink = () => {
       _routerPush(to);
     };
-    $a.onclick = _clickLink;
-    return $a.outerHTML;
+    window._clickLink = _clickLink;
+    return `
+    <a class="${className}" onclick="_clickLink()">
+    ${children}
+    </a>
+    `;
   };
 
   return {
