@@ -54,4 +54,24 @@ export function bindProductFilterEvents() {
     fetchProductList();
     renderCategoryList();
   });
+
+  //검색
+
+  document.addEventListener("keydown", (e) => {
+    if (e.target.id !== "search-input") return;
+    if (e.key !== "Enter") return;
+
+    const value = e.target.value.trim();
+
+    const params = new URLSearchParams(window.location.search);
+    if (value) {
+      params.set("search", value);
+    } else {
+      params.delete("search");
+    }
+    params.set("page", "1");
+
+    history.pushState(null, "", `?${params.toString()}`);
+    fetchProductList();
+  });
 }
