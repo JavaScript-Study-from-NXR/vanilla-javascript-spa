@@ -11,7 +11,9 @@ import ErrorPage from "./ErrorPage";
 const getDetailPage = (data, relatedItems) => `
       <main class="max-w-md mx-auto px-4 py-4">
         <!-- 브레드크럼 -->
-        ${BreadCrumb("홈", data.category1, data.category2)}
+        <nav class="mb-4">
+        ${BreadCrumb(["홈", data.category1, data.category2])}
+        </nav>
         <!-- 상품 상세 정보 -->
         <div class="bg-white rounded-lg shadow-sm mb-6">
           <!-- 상품 이미지 -->

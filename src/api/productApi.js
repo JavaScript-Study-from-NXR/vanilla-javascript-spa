@@ -24,7 +24,12 @@ export async function getProduct(productId) {
 }
 
 // 카테고리 목록 조회
+let cachedCategories = null;
 export async function getCategories() {
+  if (cachedCategories) return cachedCategories;
+
   const response = await fetch("/api/categories");
-  return await response.json();
+  const data = await response.json();
+  cachedCategories = data;
+  return data;
 }

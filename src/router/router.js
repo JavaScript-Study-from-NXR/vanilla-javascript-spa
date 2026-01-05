@@ -12,6 +12,10 @@ const routes = [
     component: ProductsPage,
   },
   {
+    path: /^\/products$/,
+    component: ProductsPage,
+  },
+  {
     path: /^\/product\/([^/]+)$/,
     component: ProductDetailPage,
   },
@@ -22,6 +26,7 @@ const routes = [
 ];
 export async function router() {
   const path = window.location.pathname;
+
   for (const route of routes) {
     //일치하는 path를 찾아서 컴포넌트 반환
     const match = path.match(route.path);

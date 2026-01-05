@@ -1,30 +1,27 @@
 import SearchBar from "../common/SearchBar";
+
+import { getCategories } from "../../api/productApi";
+import CategoryFilterList from "../common/CategoryFilterList";
+
 export default function SearchAndFilterSection() {
+  async function fetchCategories() {
+    const container = document.getElementById("category-filter-container");
+    if (!container) return;
+
+    const categories = await getCategories();
+    // const category1List = Object.keys(categories);
+    container.innerHTML = CategoryFilterList(categories);
+  }
+
+  setTimeout(fetchCategories, 0);
   return `
   <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-4">
             <!-- 검색창 -->
             ${SearchBar()}
             <!-- 필터 옵션 -->
-            <div class="space-y-3">
+            <div class="space-y-3" >
               <!-- 카테고리 필터 -->
-              <div class="space-y-2">
-                <div class="flex items-center gap-2">
-                  <label class="text-sm text-gray-600">카테고리:</label>
-                  <button data-breadcrumb="reset" class="text-xs hover:text-blue-800 hover:underline">전체</button>
-                </div>
-                <!-- 1depth 카테고리 -->
-                <div class="flex flex-wrap gap-2">
-                  <button data-category1="생활/건강" class="category1-filter-btn text-left px-3 py-2 text-sm rounded-md border transition-colors
-                     bg-white border-gray-300 text-gray-700 hover:bg-gray-50">
-                    생활/건강
-                  </button>
-                  <button data-category1="디지털/가전" class="category1-filter-btn text-left px-3 py-2 text-sm rounded-md border transition-colors
-                     bg-white border-gray-300 text-gray-700 hover:bg-gray-50">
-                    디지털/가전
-                  </button>
-                </div>
-                <!-- 2depth 카테고리 -->
-              </div>
+              <div id="category-filter-container"></div>
               <!-- 기존 필터들 -->
               <div class="flex gap-2 items-center justify-between">
                 <!-- 페이지당 상품 수 -->

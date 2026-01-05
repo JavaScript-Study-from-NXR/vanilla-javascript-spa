@@ -19,6 +19,17 @@ export function navigation() {
     }
   });
 
+  //breadcrumb
+  document.addEventListener("click", (e) => {
+    const target = e.target.closest("[data-breadcrumb-index]");
+    if (!target) return;
+    //1번 인덱스->category1
+    if (target.dataset.breadcrumbIndex === "1") {
+      history.pushState(null, "", `/products?category1=${target.dataset.breadcrumbName}`);
+      router();
+    }
+  });
+
   //popstate 이벤트가 발생했을 때 router 호출
   window.addEventListener("popstate", () => {
     router();
