@@ -34,9 +34,37 @@ function MyReact() {
     _render();
   };
 
+  /**
+   * 상태 관리 훅
+   * @param {any} initialValue
+   * @returns {[any, (newValue:any)=>void} 상태 값과 상태 변경 함수 반환
+   * @example {
+   *  const [count, setCount] = useState(0);
+   * }
+   */
+  const useState = (initialValue) => {
+    const { states, currentStateKey: key } = _options;
+    const state = states[key];
+
+    if (states.length === key) {
+      if (typeof initialValue === "function") {
+        states.push(initialValue());
+      } else {
+        states.push(initialValue);
+      }
+    }
+    const setState = (newValue) => {
+      states[key] = newValue;
+      _render();
+    };
+    _options.currentStateKey++;
+    return [state, setState];
+  };
+
   return {
     render,
+    useState,
   };
 }
 
-export const { render } = MyReact();
+export const { render, useState } = MyReact();
