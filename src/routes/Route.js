@@ -2,6 +2,10 @@ import { RouteConfig } from ".";
 import { useState, useEffect } from "../core/MyReact";
 
 function Routers(configs) {
+  /**
+   * 경로 변경 이벤트 추가 함수
+   * @param {()=>void} pathChangeCallback
+   */
   const _addEventPathnameChange = (pathChangeCallback) => {
     const _originPushRouter = history.pushState;
     const _originReplaceRouter = history.replaceState;
@@ -28,6 +32,10 @@ function Routers(configs) {
     window.addEventListener(_pathnameChangeEvent, pathChangeCallback);
   };
 
+  /**
+   * 라우터 이동 함수
+   * @param {string} path - 이동할 경로
+   */
   const _routerPush = (path) => {
     if (path === window.location.pathname) return;
     history.pushState({}, "", path);
@@ -38,6 +46,10 @@ function Routers(configs) {
   //   window.history.replaceState({}, "", path);
   // };
 
+  /**
+   * 현재 경로에 맞는 컴포넌트를 가져오는 함수
+   * @returns {Promise<string>} - 경로에 맞는 컴포넌트
+   */
   const _getComponentByPathname = async () => {
     const pathname = window.location.pathname;
     const pathComponents = pathname.slice(1).replace("index.html", "").split("/");
@@ -69,6 +81,10 @@ function Routers(configs) {
   };
 
   // @TODO(completed) async issue: need to fix async loading component issue
+  /**
+   * 라우터 컴포넌트, 경로에 맞는 컴포넌트 렌더링
+   * @returns {string} - 렌더링할 컴포넌트
+   */
   const RouteMain = () => {
     const [renderComponent, setRenderComponent] = useState("");
 
