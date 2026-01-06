@@ -1,4 +1,13 @@
 /* 추가 CSS 스타일 */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
 
 /* 상품 상세 페이지용 스타일 */
 .product-detail-container {
