@@ -86,19 +86,23 @@ function Routers(configs) {
    * @returns {string} - 렌더링할 컴포넌트
    */
   const RouteMain = () => {
-    const [renderComponent, setRenderComponent] = useState("");
-
+    const [renderComponent, setRenderComponent] = useState(() => () => "");
+    // const renderState = {
+    //   renderComponent: "",
+    // }
+    // const renderComponentState = new Proxy();
     const _changePathnameCallback = async () => {
       const component = await _getComponentByPathname();
-      setRenderComponent(component);
+      setRenderComponent(() => component);
     };
     useEffect(() => {
       console.log("useEffect run");
       _changePathnameCallback();
+      return () => {};
     }, []);
     _addEventPathnameChange(_changePathnameCallback);
 
-    return renderComponent;
+    return renderComponent();
   };
 
   /**

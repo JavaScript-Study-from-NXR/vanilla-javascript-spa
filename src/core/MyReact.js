@@ -38,10 +38,12 @@ function MyReact() {
   const _render = debounceFrame(() => {
     const { root, rootComponent } = _options;
     if (!root || !rootComponent) return;
-    root.innerHTML = rootComponent();
+
     _options.currentStateKey = 0;
+    _options.currentEffectKey = 0;
     _options.renderCount++;
     console.log(_options.renderCount + " render");
+    root.innerHTML = rootComponent();
 
     // 렌더링 후에 부수효과 실행
     const pendingEffects = _options.pendingEffects;
@@ -71,25 +73,30 @@ function MyReact() {
    * }
    */
   const useState = (initialValue) => {
-    const { states, currentStateKey: key } = _options;
+    const key = _options.currentStateKey;
+
     // 초기 상태 설정
-    if (states.length === key) {
+    if (_options.states.length === key) {
       if (typeof initialValue === "function") {
-        states.push(initialValue());
+        _options.states.push(initialValue());
       } else {
-        states.push(initialValue);
+        _options.states.push(initialValue);
       }
     }
+
     // 현재 상태와 상태 변경 함수 반환
-    const state = states[key];
-    const setState = (newValue) => {
-      if (typeof newValue === "function") {
-        states[key] = newValue(states[key]);
+    const state = _options.states[key];
+    const setState = (newState) => {
+      if (newState === _options.states[key]) return;
+      if (typeof newState === "function") {
+        _options.states[key] = newState(_options.states[key]);
       } else {
-        states[key] = newValue;
+        _options.states[key] = newState;
       }
+      console.log(_options.states);
       _render();
     };
+
     // 다음 상태 키로 이동
     _options.currentStateKey++;
 
@@ -111,30 +118,27 @@ function MyReact() {
    * },[depsArray]);
    */
   const useEffect = (effect, deps) => {
-    const { effectDeps, effectCleanups, currentEffectKey: key } = _options;
-
-    const prevDeps = effectDeps[key];
+    const prevDeps = _options.effectDeps[_options.currentEffectKey];
     const hasNoDeps = deps === undefined;
     const nextDeps = deps ?? null;
 
     let isChanged = true;
     if (!hasNoDeps && prevDeps) {
       isChanged = nextDeps.some((dep, i) => {
-        console.log(dep, prevDeps[i]);
         return !Object.is(dep, prevDeps[i]);
       });
     }
 
-    effectDeps[key] = nextDeps;
+    _options.effectDeps[_options.currentEffectKey] = nextDeps;
     if (isChanged) {
       _options.pendingEffects.push(() => {
-        const prevCleanup = effectCleanups[key];
+        const prevCleanup = _options.effectCleanups[_options.currentEffectKey];
         if (typeof prevCleanup === "function") {
           prevCleanup();
         }
 
         const cleanup = effect();
-        effectCleanups[key] = typeof cleanup === "function" ? cleanup : undefined;
+        _options.effectCleanups[_options.currentEffectKey] = typeof cleanup === "function" ? cleanup : undefined;
       });
     }
   };
