@@ -119,18 +119,37 @@ function Routers(configs) {
    * @returns {string} - 생성된 앵커 태그의 HTML 문자열
    */
   const Link = ({ to, children, className = "", ...rest }) => {
-    const _clickLink = () => {
-      _routerPush(to);
-    };
-    window._clickLink = _clickLink;
+    // const _clickLink = () => {
+    //   console.log("Link to:", to);
+    //   if (to === window.location.pathname) return;
+    //   _routerPush(to);
+    // };
+    // window._clickLink = _clickLink;
+    // return `
+    // <a class="${className}" onclick="_clickLink()" ${Object.entries(rest)
+    //   .map(([key, value]) => `${key}=${value}`)
+    //   .join(" ")}>
+    // ${children}
+    // </a>
+    // `;
     return `
-    <a class="${className}" onclick="_clickLink()" ${Object.entries(rest)
+    <a class="${className}" data-to="${to}" data-router-link="true" ${Object.entries(rest)
       .map(([key, value]) => `${key}=${value}`)
       .join(" ")}>
     ${children}
     </a>
     `;
   };
+
+  window.addEventListener("click", (e) => {
+    const target = e.target;
+    const linkElement = target.closest('a[data-router-link="true"]');
+    if (linkElement) {
+      e.preventDefault();
+      const to = linkElement.getAttribute("data-to");
+      _routerPush(to);
+    }
+  });
 
   return {
     RouteMain,
