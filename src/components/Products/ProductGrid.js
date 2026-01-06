@@ -22,7 +22,15 @@ import { Link, ROUTE_ADDRESS } from "../../routes";
 export function ProductGrid(products) {
   return `
   <div class="grid grid-cols-2 gap-4 mb-6" id="products-grid">
-    ${products.map((product) => Link(ROUTE_ADDRESS.productDetail(product.productId), ProductItem(product))).join("\n")}
+    ${products
+      .map((product) =>
+        Link({
+          to: ROUTE_ADDRESS.productDetail(product.productId),
+          children: ProductItem(product),
+          className: "",
+        }),
+      )
+      .join("\n")}
   </div>
   `;
 }

@@ -106,19 +106,27 @@ function Routers(configs) {
   };
 
   /**
+   * @typedef {Object} LinkProps
+   * @property {string} to - 이동할 경로
+   * @property {string} children - 링크 텍스트 또는 HTML
+   * @property {string} className - 링크에 적용할 class
+   * @property {Object} [rest] - 기타 추가 속성들(예: data-*, aria-* 등)
+   */
+
+  /**
    * 라우터 이동 컴포넌트
-   * @param {string} to - 이동할 경로
-   * @param {string} children - 링크 텍스트 또는 HTML
-   * @param {string} className - 링크에 적용할 class
+   * @param {LinkProps} LinkProps
    * @returns {string} - 생성된 앵커 태그의 HTML 문자열
    */
-  const Link = (to, children, className = "") => {
+  const Link = ({ to, children, className = "", ...rest }) => {
     const _clickLink = () => {
       _routerPush(to);
     };
     window._clickLink = _clickLink;
     return `
-    <a class="${className}" onclick="_clickLink()">
+    <a class="${className}" onclick="_clickLink()" ${Object.entries(rest)
+      .map(([key, value]) => `${key}=${value}`)
+      .join(" ")}>
     ${children}
     </a>
     `;
