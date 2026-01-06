@@ -87,13 +87,14 @@ function MyReact() {
     // 현재 상태와 상태 변경 함수 반환
     const state = _options.states[key];
     const setState = (newState) => {
-      if (newState === _options.states[key]) return;
       if (typeof newState === "function") {
-        _options.states[key] = newState(_options.states[key]);
+        const newValue = newState(_options.states[key]);
+        if (newValue === _options.states[key]) return;
+        _options.states[key] = newValue;
       } else {
+        if (newState === _options.states[key]) return;
         _options.states[key] = newState;
       }
-      console.log(_options.states);
       _render();
     };
 
@@ -141,6 +142,7 @@ function MyReact() {
         _options.effectCleanups[_options.currentEffectKey] = typeof cleanup === "function" ? cleanup : undefined;
       });
     }
+    _options.currentEffectKey++;
   };
 
   return {
