@@ -1,25 +1,10 @@
 import AddCartButton from "../button/AddCartButton";
 export default function ProductCard(product) {
-  const {
-    brand,
-    // category1,
-    // category2,
-    // category3,
-    // category4,
-    // hprice,
-    image,
-    // link,
-    lprice,
-    // maker,
-    mallName,
-    productId,
-    // productType,
-    title,
-  } = product;
+  const { brand, image, lprice, mallName, productId, title } = product;
   return `
-  <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden product-card"
+  <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden product-card"  data-product-id="${productId}"
   data-navigate='detail'     
-  data-product-id=${productId}>
+  data-product-id="${productId}">
     <!-- 상품 이미지 -->
     <div class="aspect-square bg-gray-100 overflow-hidden cursor-pointer product-image">
       <img src=${image}

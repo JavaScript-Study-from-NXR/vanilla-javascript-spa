@@ -10,6 +10,7 @@ export function navigation() {
     if (target.dataset.navigate === "back") {
       history.back();
     } else if (target.dataset.navigate === "detail") {
+      if (e.target.closest("#add-to-cart-btn")) return;
       history.pushState(null, "", `product/${target.dataset.productId}`);
       router();
     } else {

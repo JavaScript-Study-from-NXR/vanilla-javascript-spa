@@ -3,7 +3,7 @@ import SearchAndFilterSection from "../components/products/SearchAndFilterSectio
 import { getProducts } from "../api/productApi";
 import ProductListSkeleton from "../components/skeleton/ProductListSkeleton";
 import ErrorPage from "./ErrorPage";
-import { bindProductFilterEvents } from "../events/productFilterEvents";
+
 const getProductsPage = (data) => `
         <div class="mb-6">
           ${ProductList(data)}
@@ -27,7 +27,6 @@ export default async function ProductsPage() {
   //DOM이 다 그려진 후에 fetchProductList르ㄹ실행하도록 ..
   // -> 그 전에 실행되면 id="products-container"를 못찾음
   setTimeout(fetchProductList, 0);
-  bindProductFilterEvents();
 
   return `
     <div class="min-h-screen bg-gray-50" >

@@ -4,7 +4,7 @@ import { fetchProductList } from "../pages/ProductsPage";
 //중복 바인딩 방지 (이벤트 여러번 동작하는 것 방지)
 let isBound = false;
 
-export function bindProductFilterEvents() {
+export function initProductFilterEvents() {
   if (isBound) return;
   isBound = true;
 

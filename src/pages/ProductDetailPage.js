@@ -7,7 +7,7 @@ import BreadCrumb from "../components/common/BreadCrumb";
 import Rating from "../components/common/Rating";
 import productDetailSkeleton from "../components/skeleton/ProductDetailSkeleton";
 import ErrorPage from "./ErrorPage";
-
+import { addCartEvents } from "../events/addCartEvents";
 const getDetailPage = (data, relatedItems) => `
       <main class="max-w-md mx-auto px-4 py-4">
         <!-- 브레드크럼 -->
@@ -46,7 +46,7 @@ const getDetailPage = (data, relatedItems) => `
           </div>
           <!-- 수량 선택 및 액션 -->
           <div class="border-t border-gray-200 p-4">
-            <div class="flex items-center justify-between mb-4">
+            <div class="product-detail-counter flex items-center justify-between mb-4">
               <span class="text-sm font-medium text-gray-900">수량</span>
               ${Counter()}
             </div>
@@ -87,8 +87,9 @@ export default function ProductDetailPage(id) {
     }
   }
   setTimeout(fetchProductDetail, 0);
+  addCartEvents();
 
-  return `<div class="min-h-screen bg-gray-50" id="product-detail-container">
+  return `<div class="min-h-screen bg-gray-50" id="product-detail-container" data-product-id="${id}">
   ${productDetailSkeleton()}
   </div>`;
 }
