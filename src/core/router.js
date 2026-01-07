@@ -7,7 +7,7 @@ export const createRouter = () => {
   // 끝의 / 제거하여 정규화
   const BASE_PATH = (import.meta.env.BASE_URL || "/").replace(/\/$/, "");
 
-  // pathname에서 BASE_PATH 제거
+  // pathname에서 BASE_PATH 제거 (경로 가져오기)
   const getRouterPath = (pathname) => {
     if (BASE_PATH === "" || !pathname.startsWith(BASE_PATH)) {
       return pathname;
@@ -18,22 +18,14 @@ export const createRouter = () => {
 
   // URL과 라우트 매칭
   const matchRoute = (pathname) => {
-    const routerPath = getRouterPath(pathname);
+    const routerPath = getRouterPath(pathname); // ex. /product/123
 
     for (const route of routes) {
-      // 동적 파라미터 지원: /product/:id
-      const paramNames = [];
-      const pattern = route.path.replace(/:(\w+)/g, (_, name) => {
-        paramNames.push(name);
-        return "([^/]+)";
-      });
-
-      const regex = new RegExp(`^${pattern}$`);
-      const matches = routerPath.match(regex);
+      const matches = routerPath.match(route.regex);
 
       if (matches) {
         const params = {};
-        paramNames.forEach((name, i) => {
+        route.paramNames.forEach((name, i) => {
           params[name] = matches[i + 1];
         });
         return { handler: route.handler, params };
@@ -59,7 +51,15 @@ export const createRouter = () => {
   return {
     // 라우트 등록
     addRoute: (path, handler) => {
-      routes.push({ path, handler });
+      // 라우트 등록 시점에 정규식과 파라미터 이름을 미리 전처리
+      const paramNames = [];
+      const pattern = path.replace(/:(\w+)/g, (_, name) => {
+        paramNames.push(name);
+        return "([^/]+)";
+      });
+      const regex = new RegExp(`^${pattern}$`);
+
+      routes.push({ path, handler, regex, paramNames });
     },
 
     // 404 핸들러 등록
