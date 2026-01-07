@@ -11,6 +11,10 @@ import { CartButton } from "../Cart";
  * @property {string} productId
  * @property {string} productType
  * @property {string} mallName
+ * @property {string} description
+ * @property {string} rating
+ * @property {string} reviewCount
+ * @property {string} stock
  *
  */
 
@@ -38,11 +42,16 @@ export function ProductItem(product) {
         </h3>
         <p class="text-xs text-gray-500 mb-2">${product.brand}</p>
         <p class="text-lg font-bold text-gray-900">
-          ${product.lprice}원
+          ${Number(product.lprice).toLocaleString()}원
         </p>
       </div>
       <!-- 장바구니 버튼 -->
-      ${CartButton(product.id)}
+      ${CartButton({
+        productId: product.productId,
+        children: "장바구니 담기",
+        "data-product-quantity": 1,
+        "data-router-ignore": "true",
+      })}
     </div>
   </div>
   `;

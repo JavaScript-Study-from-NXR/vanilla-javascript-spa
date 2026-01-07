@@ -15,31 +15,25 @@
  * @param {BreadScrumbProps} props
  * @returns {string} HTML 문자열
  */
-import { CButton } from ".";
+// import { CButton } from ".";
 import { Icon } from "../assets/icons";
 
-function BreadScrumb({ items, separator, className = "flex items-center space-x-2 text-sm text-gray-600", ...rest }) {
+function BreadScrumb({
+  items = [],
+  separator,
+  className = "flex items-center space-x-2 text-sm text-gray-600",
+  children = "",
+  ...rest
+}) {
   return `
-  <nav class="mb-4">
     <div class="${className}" 
       ${Object.entries(rest)
         .map(([key, value]) => `${key}=${value}`)
         .join(" ")}
     >
-      ${Object.entries(items)
-        .map(
-          ([text, link]) => `
-          ${CButton({
-            mode: "link",
-            to: link,
-            className: "breadcrumb-link",
-            children: text,
-          })}
-        `,
-        )
-        .join(`${separator ?? Icon.BackArrow()}`)}
+      ${children}
+      ${items.join(`${separator ?? Icon.RightArrow()}`)}
     </div>
-  </nav>
   `;
 }
 

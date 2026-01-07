@@ -18,7 +18,7 @@ function MyReact() {
    */
   const _options = {
     //  == 상태 관련 ==
-    states: [],
+    states: new Map(),
     currentStateKey: 0,
     //  == 렌더링 관련 ==
     rootComponent: null,
@@ -29,6 +29,7 @@ function MyReact() {
     effectCleanups: [],
     pendingEffects: [],
     currentEffectKey: 0,
+    effectRenderCount: [],
   };
 
   /**
@@ -42,11 +43,12 @@ function MyReact() {
     _options.currentStateKey = 0;
     _options.currentEffectKey = 0;
     _options.renderCount++;
-    console.log(_options.renderCount + " render");
+    // _options.effectRenderCount = Array(_options.effectRenderCount.length).fill(0);
+    // console.log(_options.renderCount + " render");
     root.innerHTML = rootComponent();
-
     // 렌더링 후에 부수효과 실행
     const pendingEffects = _options.pendingEffects;
+
     _options.pendingEffects = [];
     for (const run of pendingEffects) {
       run();
@@ -72,36 +74,35 @@ function MyReact() {
    *  const [count, setCount] = useState(0);
    * }
    */
-  const useState = (initialValue) => {
-    const key = _options.currentStateKey;
-
+  const useState = (key, initialValue) => {
+    // const key = _options.currentStateKey;
     // 초기 상태 설정
-    if (_options.states.length === key) {
+    if (!_options.states.has(key)) {
       if (typeof initialValue === "function") {
-        _options.states.push(initialValue());
+        _options.states.set(key, initialValue());
       } else {
-        _options.states.push(initialValue);
+        _options.states.set(key, initialValue);
       }
     }
 
     // 현재 상태와 상태 변경 함수 반환
-    const state = _options.states[key];
-    const setState = (newState) => {
+    const state = _options.states.get(key);
+    const setState = (key) => (newState) => {
       if (typeof newState === "function") {
         const newValue = newState(_options.states[key]);
-        if (newValue === _options.states[key]) return;
-        _options.states[key] = newValue;
+        if (newValue === _options.states.get(key)) return;
+        _options.states.set(key, newValue);
       } else {
-        if (newState === _options.states[key]) return;
-        _options.states[key] = newState;
+        if (newState === _options.states.get(key)) return;
+        _options.states.set(key, newState);
       }
       _render();
     };
 
     // 다음 상태 키로 이동
-    _options.currentStateKey++;
+    // _options.currentStateKey++;
 
-    return [state, setState];
+    return [state, setState(key)];
   };
 
   // @TODO : 여러 위치에서 useEffect 호출 시 문제 발생하는지 테스트 필요
@@ -119,29 +120,38 @@ function MyReact() {
    * },[depsArray]);
    */
   const useEffect = (effect, deps) => {
-    const prevDeps = _options.effectDeps[_options.currentEffectKey];
+    const { currentEffectKey: key } = _options;
+    const prevDeps = _options.effectDeps[key];
     const hasNoDeps = deps === undefined;
     const nextDeps = deps ?? null;
-
+    const currentRenderCount = _options.effectRenderCount[key];
+    if (!currentRenderCount) {
+      _options.effectRenderCount.push(0);
+    }
     let isChanged = true;
-    if (!hasNoDeps && prevDeps) {
+    if (_options.effectRenderCount[key] > 0 && !hasNoDeps && prevDeps) {
       isChanged = nextDeps.some((dep, i) => {
         return !Object.is(dep, prevDeps[i]);
       });
     }
 
-    _options.effectDeps[_options.currentEffectKey] = nextDeps;
+    // console.log("effectRenderCount", _options.effectRenderCount[key]);
+    // console.log("key: ", key);
+    // console.log("effectDeps: ", _options.effectDeps);
+    // console.log("isChanged: ", isChanged);
+    _options.effectDeps[key] = nextDeps;
     if (isChanged) {
       _options.pendingEffects.push(() => {
-        const prevCleanup = _options.effectCleanups[_options.currentEffectKey];
+        const prevCleanup = _options.effectCleanups[key];
         if (typeof prevCleanup === "function") {
           prevCleanup();
         }
 
         const cleanup = effect();
-        _options.effectCleanups[_options.currentEffectKey] = typeof cleanup === "function" ? cleanup : undefined;
+        _options.effectCleanups[key] = typeof cleanup === "function" ? cleanup : undefined;
       });
     }
+    _options.effectRenderCount[key]++;
     _options.currentEffectKey++;
   };
 

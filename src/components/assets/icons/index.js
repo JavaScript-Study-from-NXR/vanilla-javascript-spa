@@ -4,6 +4,7 @@ import { Loading } from "./loading";
 import { Minus } from "./minus";
 import { Plus } from "./plus";
 import { RightArrow } from "./rightArrow";
+import { Search } from "./search";
 import { Star } from "./star";
 
 export const Icon = {
@@ -13,5 +14,6 @@ export const Icon = {
   Minus,
   Plus,
   RightArrow,
+  Search,
   Star,
 };
