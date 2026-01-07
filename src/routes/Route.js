@@ -86,21 +86,33 @@ function Routers(configs) {
    * @returns {string} - 렌더링할 컴포넌트
    */
   const RouteMain = () => {
-    const [renderComponent, setRenderComponent] = useState(() => () => "");
-    // const renderState = {
-    //   renderComponent: "",
-    // }
-    // const renderComponentState = new Proxy();
+    const [renderComponent, setRenderComponent] = useState("route-main-render-compo", () => () => "");
+
     const _changePathnameCallback = async () => {
       const component = await _getComponentByPathname();
       setRenderComponent(() => component);
     };
+    const _handleLinkClick = (e) => {
+      const target = e.target;
+      const linkElement = target.closest('a[data-router-link="true"]');
+      if (target.closest("[data-router-ignore='true']")) return;
+      if (linkElement) {
+        e.preventDefault();
+        const to = linkElement.getAttribute("data-to");
+        _routerPush(to);
+      }
+    };
     useEffect(() => {
-      console.log("useEffect run");
       _changePathnameCallback();
       return () => {};
     }, []);
     _addEventPathnameChange(_changePathnameCallback);
+    useEffect(() => {
+      window.addEventListener("click", _handleLinkClick);
+      return () => {
+        window.removeEventListener("click", _handleLinkClick);
+      };
+    }, []);
 
     return renderComponent();
   };
@@ -140,16 +152,6 @@ function Routers(configs) {
     </a>
     `;
   };
-
-  window.addEventListener("click", (e) => {
-    const target = e.target;
-    const linkElement = target.closest('a[data-router-link="true"]');
-    if (linkElement) {
-      e.preventDefault();
-      const to = linkElement.getAttribute("data-to");
-      _routerPush(to);
-    }
-  });
 
   return {
     RouteMain,
