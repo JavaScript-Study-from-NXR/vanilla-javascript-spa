@@ -89,7 +89,7 @@ function MyReact() {
     const state = _options.states.get(key);
     const setState = (key) => (newState) => {
       if (typeof newState === "function") {
-        const newValue = newState(_options.states[key]);
+        const newValue = newState(_options.states.get(key));
         if (newValue === _options.states.get(key)) return;
         _options.states.set(key, newValue);
       } else {
