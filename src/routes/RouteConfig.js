@@ -4,7 +4,21 @@ export const RouteConfig = {
   "/404": () => import("../pages/NotFound").then((module) => module.default),
 };
 
+/**
+ *
+ */
 export const ROUTE_ADDRESS = {
   home: "/",
+  /**
+   * @method
+   * @param {object} query
+   * @returns {string}
+   */
+  productFilter: (query) =>
+    "/" +
+    "?" +
+    Object.entries(query)
+      .map(([key, value]) => `${key}="${value}"`)
+      .join("&"),
   productDetail: (productId) => `/product/${productId}`,
 };

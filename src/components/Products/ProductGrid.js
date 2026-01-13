@@ -16,9 +16,6 @@ import { ProductCounts } from "./ProductCounts";
  * @property {string} mallName
  *
  */
-/**
- *
- */
 
 /**
  * 상품 아이템 그리드 컴포넌트
@@ -67,13 +64,13 @@ export function ProductGrid({ params = { limit: 20, search: "", category1: "", c
         }),
       )
       .join("\n")}
-      ${
-        pagination?.hasNext
-          ? ""
-          : `<div class="text-center py-4 text-sm text-gray-500">
-          모든 상품을 확인했습니다
-        </div>`
-      }
   </div>
+  ${
+    pagination?.hasNext
+      ? ""
+      : `<div class="text-center py-4 text-sm text-gray-500">
+      모든 상품을 확인했습니다
+    </div>`
+  }
   `;
 }
